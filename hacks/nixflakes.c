@@ -20,6 +20,22 @@
  * documentation.  No representations are made about the suitability of this
  * software for any purpose.  It is provided "as is" without express or 
  * implied warranty.
+ *
+ * nixflakes, Copyright (c) 2024
+    Christina Sørensen <christina@cafkafk.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <math.h>
@@ -296,9 +312,9 @@ FuzzyFlakesColorHelper(Flake *flake)
    iG0 = nG0 * 255;
    iB0 = nB0 * 255;
 
-   iR1 = nR1 * 255;
-   iG1 = nG1 * 255;
-   iB1 = nB1 * 255;
+   iR1 = 255;
+   iG1 = 255;
+   iB1 = 255;
 
    flake->Colors.Fore = malloc(sizeof(char) * 8);
    flake->Colors.Bord = malloc(sizeof(char) * 8);
@@ -488,49 +504,78 @@ FuzzyFlakesMove(Flake *flake)
 static void
 FuzzyFlakesDrawFlake(Flake *flake, int XPos, int YPos, double AngleOffset, int Layer)
 {
-   int                 i;
-   double              x, y, Angle, Radius;
+   int i;
+   double x, y, x_b, y_b, Angle, BAngle, Radius;
 
    /* calculate the shrink factor debending on which layer we are drawing atm */
    Radius = (double)(flake->Radius - Layer * 5);
    /* draw the flake one arm at a time */
    for (i = 1; i <= flake->Arms; i++)
      {
-	int                 Diameter;
+        int Diameter;
 
-	Diameter = (flake->BorderThickness * 2 + flake->Thickness) / Layer;
-	/* compute the angle of this arm of the flake */
-	Angle = ((2 * M_PI) / flake->Arms) * i + AngleOffset;
-	/* calculate the x and y dispositions for this arm */
-	y = (int)(sin(Angle) * Radius);
-	x = (int)(cos(Angle) * Radius);
-	/* draw the base for the arm */
-	flake->GCValues.line_width = Diameter;
-	XFreeGC(flake->dpy, flake->GCVar);
-	flake->GCVar =
-	   XCreateGC(flake->dpy, flake->DB.b, flake->GCFlags,
-		     &flake->GCValues);
-	XSetForeground(flake->dpy, flake->GCVar, flake->BordColor);
-	XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos, YPos,
-		  XPos + x, YPos + y);
+        Diameter = (flake->BorderThickness * 2 + flake->Thickness) / Layer;
+        /* compute the angle of this arm of the flake */
+        Angle = ((2 * M_PI) / flake->Arms) * i + AngleOffset;
+        BAngle = Angle + ((M_PI/6));
+
+        /* calculate the x and y dispositions for this arm */
+        y = (int)(sin(Angle) * Radius);
+        x = (int)(cos(Angle) * Radius);
+
+        /* Draw Y/lambda branches */
+        y_b = (int)(sin(BAngle) * (Radius)) ;
+        x_b = (int)(cos(BAngle) * (Radius)) ;
+
+        /* draw the base for the arm */
+        flake->GCValues.line_width = Diameter;
+        XFreeGC(flake->dpy, flake->GCVar);
+        flake->GCVar =
+            XCreateGC(flake->dpy, flake->DB.b, flake->GCFlags,
+                    &flake->GCValues);
+        XSetForeground(flake->dpy, flake->GCVar, flake->BordColor);
+        XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos, YPos,
+               XPos + x, YPos + y);
+        XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos + (x/2), YPos + (y/2),
+                XPos + x_b, YPos + y_b);
      }
    /* draw the flake one arm at a time */
    for (i = 1; i <= flake->Arms; i++)
      {
-	/* compute the angle of this arm of the flake */
-	Angle = ((2 * M_PI) / flake->Arms) * i + AngleOffset;
-	/* calculate the x and y dispositions for this arm */
-	y = (int)(sin(Angle) * Radius);
-	x = (int)(cos(Angle) * Radius);
-	/* draw the inside of the arm */
-	flake->GCValues.line_width = flake->Thickness / Layer;
-	XFreeGC(flake->dpy, flake->GCVar);
-	flake->GCVar =
-	   XCreateGC(flake->dpy, flake->DB.b, flake->GCFlags,
-		     &flake->GCValues);
-	XSetForeground(flake->dpy, flake->GCVar, flake->ForeColor);
-	XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos, YPos,
-		  XPos + x, YPos + y);
+
+
+        char * arm_color_a = malloc(sizeof(char) * 8);
+        char * arm_color_b = malloc(sizeof(char) * 8);
+        sprintf(arm_color_a, "#%02X%02X%02X", 0x75, 0xef, 0xff);
+        sprintf(arm_color_b, "#%02X%02X%02X", 0x87, 0x89, 0xff);
+
+        /* compute the angle of this arm of the flake */
+        Angle = ((2 * M_PI) / flake->Arms) * i + AngleOffset;
+        BAngle = Angle + ((M_PI/6));
+
+        /* calculate the x and y dispositions for this arm */
+        y = (int)(sin(Angle) * Radius);
+        x = (int)(cos(Angle) * Radius);
+
+        /* Draw Y/lambda branches */
+        y_b = (int)(sin(BAngle) * (Radius)) ;
+        x_b = (int)(cos(BAngle) * (Radius)) ;
+
+        /* draw the inside of the arm */
+        flake->GCValues.line_width = flake->Thickness / Layer;
+        XFreeGC(flake->dpy, flake->GCVar);
+        flake->GCVar =
+            XCreateGC(flake->dpy, flake->DB.b, flake->GCFlags,
+                    &flake->GCValues);
+        if (i % 2 == 0) {
+          XSetForeground(flake->dpy, flake->GCVar, FuzzyFlakesColorResource(flake, arm_color_a));
+        } else {
+          XSetForeground(flake->dpy, flake->GCVar, FuzzyFlakesColorResource(flake, arm_color_b));
+        }
+        XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos, YPos,
+                XPos + x, YPos + y);
+        XDrawLine(flake->dpy, flake->DB.b, flake->GCVar, XPos + (x/2), YPos + (y/2),
+                XPos + x_b, YPos + y_b);
      }
 }
 
@@ -620,8 +665,8 @@ fuzzyflakes_free (Display *dpy, Window window, void *closure)
 
 
 static const char *fuzzyflakes_defaults[] = {
-   "*color:	#efbea5",
-   "*arms:	5",
+   "*color:	#9999ff",
+   "*arms:	6",
    "*thickness:	10",
    "*bthickness:	3",
    "*radius:	20",
