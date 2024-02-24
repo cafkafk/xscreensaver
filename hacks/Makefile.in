@@ -120,7 +120,7 @@ SRCS		= xscreensaver-getimage.c \
 		  barcode.c piecewise.c cloudlife.c fontglide.c apple2.c \
 		  apple2-main.c analogtv.c analogtv-cli.c xanalogtv.c pong.c \
 		  filmleader.c wormhole.c pacman.c pacman_ai.c pacman_level.c \
-		  fuzzyflakes.c anemotaxis.c memscroller.c substrate.c \
+		  fuzzyflakes.c nixflakes.c anemotaxis.c memscroller.c substrate.c \
 		  intermomentary.c fireworkx.c fiberlamp.c \
 		  boxfit.c interaggregate.c celtic.c cwaves.c m6502.c \
 		  asm6502.c abstractile.c lcdscrub.c hexadrop.c \
@@ -159,7 +159,7 @@ OBJS		= attraction.o blitspin.o bouboule.o braid.o bubbles.o \
 		  barcode.o piecewise.o cloudlife.o fontglide.o apple2.o \
 		  apple2-main.o analogtv.o analogtv2.o analogtv-cli.o \
 		  xanalogtv.o pong.o filmleader.o wormhole.o pacman.o \
-		  pacman_ai.o pacman_level.o fuzzyflakes.o anemotaxis.o \
+		  pacman_ai.o pacman_level.o fuzzyflakes.o nixflakes.o anemotaxis.o \
 		  memscroller.o substrate.o intermomentary.o fireworkx.o \
 		  fiberlamp.o boxfit.o interaggregate.o celtic.o cwaves.o \
 		  webcollage-cocoa.o webcollage-helper-cocoa.o m6502.o \
@@ -185,7 +185,7 @@ EXES		= attraction blitspin bouboule braid decayscreen deco \
 		  polyominoes fluidballs anemone halftone \
 		  metaballs eruption popsquares barcode piecewise cloudlife \
 		  fontglide apple2 xanalogtv pong filmleader wormhole \
-		  pacman fuzzyflakes anemotaxis memscroller substrate \
+		  pacman fuzzyflakes nixflakes anemotaxis memscroller substrate \
 		  intermomentary fireworkx fiberlamp boxfit interaggregate \
 		  celtic cwaves m6502 abstractile lcdscrub hexadrop \
 		  tessellimage binaryring glitchpeg vfeedback scooter \
@@ -241,6 +241,7 @@ MEN		= anemone.man apollonian.man attraction.man \
 		  eruption.man popsquares.man metaballs.man \
 		  barcode.man piecewise.man cloudlife.man \
 		  fontglide.man apple2.man xanalogtv.man filmleader.man \
+		  pong.man wormhole.man pacman.man fuzzyflakes.man nixflakes.man \
 		  pong.man wormhole.man pacman.man fuzzyflakes.man \
 		  anemotaxis.man memscroller.man substrate.man m6502.man \
 		  intermomentary.man fireworkx.man fiberlamp.man boxfit.man \
@@ -822,6 +823,9 @@ wormhole: 	wormhole.o	$(HACK_OBJS)
 	$(CC_HACK) -o $@ $@.o	$(HACK_OBJS) $(HACK_LIBS)
 
 fuzzyflakes:	fuzzyflakes.o	$(HACK_OBJS)
+	$(CC_HACK) -o $@ $@.o	$(HACK_OBJS) $(HACK_LIBS)
+
+nixflakes:	nixflakes.o	$(HACK_OBJS)
 	$(CC_HACK) -o $@ $@.o	$(HACK_OBJS) $(HACK_LIBS)
 
 anemotaxis:	anemotaxis.o	$(HACK_OBJS) $(COL) $(DBE)
@@ -1951,6 +1955,20 @@ fuzzyflakes.o: $(UTILS_SRC)/usleep.h
 fuzzyflakes.o: $(UTILS_SRC)/visual.h
 fuzzyflakes.o: $(UTILS_SRC)/xft.h
 fuzzyflakes.o: $(UTILS_SRC)/yarandom.h
+nixflakes.o: ../config.h
+nixflakes.o: $(srcdir)/fps.h
+nixflakes.o: $(srcdir)/recanim.h
+nixflakes.o: $(srcdir)/screenhackI.h
+nixflakes.o: $(srcdir)/screenhack.h
+nixflakes.o: $(UTILS_SRC)/colors.h
+nixflakes.o: $(UTILS_SRC)/font-retry.h
+nixflakes.o: $(UTILS_SRC)/grabclient.h
+nixflakes.o: $(UTILS_SRC)/hsv.h
+nixflakes.o: $(UTILS_SRC)/resources.h
+nixflakes.o: $(UTILS_SRC)/usleep.h
+nixflakes.o: $(UTILS_SRC)/visual.h
+nixflakes.o: $(UTILS_SRC)/xft.h
+nixflakes.o: $(UTILS_SRC)/yarandom.h
 galaxy.o: ../config.h
 galaxy.o: $(srcdir)/fps.h
 galaxy.o: $(srcdir)/recanim.h

@@ -337,6 +337,7 @@
 - GL: 				antinspect --root			    \\n\
 				fireworkx --root			    \\n\
 				fuzzyflakes --root			    \\n\
+				nixflakes --root			    \\n\
 				interaggregate --root			    \\n\
 				intermomentary --root			    \\n\
 				memscroller --root			    \\n\
@@ -476,6 +477,7 @@
 "*hacks.flyingtoasters.name: Flying Toasters",
 "*hacks.fontglide.name:      Font Glide",
 "*hacks.fuzzyflakes.name:    Fuzzy Flakes",
+"*hacks.nixflakes.name:      Nix Flakes",
 "*hacks.geodesicgears.name:  Geodesic Gears",
 "*hacks.gflux.name:          GFlux",
 "*hacks.glblur.name:         GL Blur",
