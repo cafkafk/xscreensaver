@@ -12,7 +12,9 @@
     packages = eachSystem (pkgs:
       rec {
         default = xscreensaver;
-        xscreensaver = pkgs.xscreensaver // { src = ./.; };
+        xscreensaver = pkgs.xscreensaver.overrideAttrs (old: {
+          src = ./.;
+        });
       }
     );
 
